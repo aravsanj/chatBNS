@@ -1,0 +1,17 @@
+{
+  "name": "chatBNS",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:api": "pnpm --filter api dev",
+    "install:api": "pnpm --filter api install",
+    "build:web": "pnpm --filter web build",
+    "build:api": "pnpm --filter api build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.0"
+}
