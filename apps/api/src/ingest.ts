@@ -18,6 +18,7 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error("Supabase environment variables are not set.");
 }
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 interface CsvRow {
@@ -55,10 +56,6 @@ async function ingestData() {
     console.error("No data found in the CSV file.");
     return;
   }
-  if (!parsedResult.data || parsedResult.data.length === 0) {
-    console.error("No data found in the CSV file.");
-    return;
-  }
 
   const splitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
@@ -80,7 +77,13 @@ async function ingestData() {
     }
 
     try {
-      const textChunks = await splitter.splitText(Description);
+      const combinedText = `
+        Chapter: ${Chapter} - ${Chapter_name} (${Chapter_subtype || "N/A"})
+        Section: ${Section} - ${Section_name}
+        Content: ${Description}
+      `.trim();
+
+      const textChunks = await splitter.splitText(combinedText);
 
       for (const chunk of textChunks) {
         const output = await embedder(chunk, {
