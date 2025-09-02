@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "ts-node-dev --respawn src/index.ts",
     "ingest": "pnpm build && node dist/ingest.js",
+    "start": "pnpm build && node dist/index.js",
     "build": "tsc"
   },
   "keywords": [],
