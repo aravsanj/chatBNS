@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev:web": "pnpm --filter web dev",
-    "dev:api": "pnpm --filter api dev",
+    "dev:api": "pnpm --filter api dev -p 3001",
+    "start:api": "pnpm --filter api start -p 3001",
+    "dev": "concurrently \"pnpm run dev:web\" \"pnpm run dev:api\"",
     "install:api": "pnpm --filter api install",
     "build:web": "pnpm --filter web build",
     "build:api": "pnpm --filter api build"
@@ -16,5 +18,8 @@
   "packageManager": "pnpm@10.15.0",
   "resolutions": {
     "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }

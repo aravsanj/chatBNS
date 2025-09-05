@@ -5,6 +5,9 @@
 # All node modules for the monorepo
 node_modules/
 
+#next build
+.next/
+
 # pnpm lockfile and state
 pnpm-lock.yaml
 .pnpm-state.json
