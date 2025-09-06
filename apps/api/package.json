@@ -8,6 +8,7 @@
     "dev": "node --loader ts-node/esm --watch src/index.ts",
     "ingest": "pnpm build && node dist/ingest.js",
     "start": "pnpm build && node dist/index.js -p 3001",
+    "start:prod": "node dist/index.js",
     "build": "tsc"
   },
   "keywords": [],
