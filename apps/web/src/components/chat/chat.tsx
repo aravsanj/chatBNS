@@ -45,7 +45,7 @@ const models = [
   },
 ];
 
-const BACKEND_API = process.env.BACKEND_API;
+const BACKEND_API = process.env.NEXT_PUBLIC_BACKEND_API;
 
 export default function Chat({
   id,
