@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import Chat from "@/components/chat/chat";
 import { loadChat } from "@/lib/chat-store";
 import { ChatHistorySidebar } from "@/components/chat/chat-sidebar";
+import { UIMessage } from "ai";
 
 export default function Page({
   params,
@@ -12,7 +13,7 @@ export default function Page({
 }) {
   const unwrappedParams = use(params);
   const { chatId } = unwrappedParams;
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<UIMessage[]>([]);
   const [loadingChat, setLoadingChat] = useState(true);
 
   useEffect(() => {
