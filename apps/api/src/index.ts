@@ -8,6 +8,7 @@ import {
   streamText,
 } from "ai";
 import { google } from "@ai-sdk/google";
+import cors from "cors";
 
 dotenv.config();
 
@@ -37,6 +38,17 @@ const embedder = await pipeline(
 
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: [
+      "https://chat-bns.vercel.app",
+      "https://www.chat-bns.vercel.app",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 const port = process.env.PORT || 3001;
 
 app.post("/api/chat", async (req: Request, res: Response) => {
