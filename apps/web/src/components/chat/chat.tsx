@@ -45,6 +45,8 @@ const models = [
   },
 ];
 
+const BACKEND_API = process.env.BACKEND_API;
+
 export default function Chat({
   id,
   initialMessages = [],
@@ -59,7 +61,7 @@ export default function Chat({
     id,
     messages: initialMessages,
     transport: new DefaultChatTransport({
-      api: "http://localhost:3001/api/chat",
+      api: BACKEND_API,
     }),
     onFinish: ({ messages }) => {
       saveChat({
