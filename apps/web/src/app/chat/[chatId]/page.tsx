@@ -16,9 +16,9 @@ export default function Page({
   const [loadingChat, setLoadingChat] = useState(true);
 
   useEffect(() => {
-    loadChat(chatId)
-      .then(setMessages)
-      .finally(() => setLoadingChat(false));
+    const chatMessages = loadChat(chatId);
+    setMessages(chatMessages);
+    setLoadingChat(false);
   }, [chatId]);
 
   return (

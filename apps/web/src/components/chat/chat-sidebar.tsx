@@ -17,8 +17,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { History, MessageSquare, PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { get } from "http";
-import { getStoredChats } from "@/lib/chat-store";
+import { listChats, loadChat } from "@/lib/chat-store";
 import { TextUIPart } from "ai";
 
 export function ChatHistorySidebar({
@@ -26,9 +25,10 @@ export function ChatHistorySidebar({
 }: {
   currentChatId?: string;
 }) {
-  const chatsMap = getStoredChats();
+  const chatsMeta = listChats();
 
-  const chats = Array.from(chatsMap.entries()).map(([id, messages]) => {
+  const chats = chatsMeta.map((meta) => {
+    const messages = loadChat(meta.id);
     const firstUserMessage = messages.find((msg) => msg.role === "user");
 
     const title =
@@ -36,8 +36,14 @@ export function ChatHistorySidebar({
         (part): part is TextUIPart => part.type === "text"
       )?.text || "New Chat";
 
-    return { id, title };
+    return { id: meta.id, title, meta, messages };
   });
+
+  const currentChat = currentChatId
+    ? chats.find((chat) => chat.id === currentChatId)
+    : undefined;
+  const isNewEmptyChat = currentChat && currentChat.messages.length === 0;
+
   return (
     <SidebarProvider className="w-fit">
       <Sidebar>
@@ -46,11 +52,28 @@ export function ChatHistorySidebar({
             <h2 className="text-lg font-semibold flex items-center">
               <History className="mr-2 h-5 w-5" /> Chat History
             </h2>
-            <Link href="/chat">
-              <Button variant="ghost" size="icon" aria-label="New chat">
+            {isNewEmptyChat ? (
+              <Button
+                className="cursor-pointer"
+                variant="ghost"
+                size="icon"
+                aria-label="New chat"
+                disabled
+              >
                 <PlusCircle className="h-5 w-5" />
               </Button>
-            </Link>
+            ) : (
+              <Link href="/">
+                <Button
+                  className="cursor-pointer"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="New chat"
+                >
+                  <PlusCircle className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
           </div>
         </SidebarHeader>
         <SidebarContent>

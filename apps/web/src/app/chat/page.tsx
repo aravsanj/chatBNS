@@ -9,7 +9,7 @@ export default function Page() {
 
   useEffect(() => {
     async function init() {
-      const id = await createChat();
+      const id = createChat();
       router.replace(`/chat/${id}`);
     }
     init();
