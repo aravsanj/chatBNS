@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "dev:web": "pnpm --filter web dev",
-    "dev:api": "pnpm --filter api dev -p 3001",
-    "start:api": "pnpm --filter api start -p 3001",
-    "dev": "concurrently \"pnpm run dev:web\" \"pnpm run dev:api\"",
+    "start:web": "pnpm --filter web start",
+    "dev:api": "pnpm --filter api dev -- --port 3001",
+    "start:api": "pnpm --filter api start -- --port 3001",
     "install:api": "pnpm --filter api install",
     "build:web": "pnpm --filter web build",
-    "build:api": "pnpm --filter api build"
+    "build:api": "pnpm --filter api build",
+    "build": "pnpm build:web && pnpm build:api",
+    "start": "concurrently -n web,api -c cyan,green \"pnpm start:web\" \"pnpm start:api\"",
+    "dev": "concurrently -n web,api -c cyan,green \"pnpm dev:web\" \"pnpm dev:api\""
   },
   "keywords": [],
   "author": "",

@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "ts-node-dev --respawn src/index.ts",
+    "dev": "node --loader ts-node/esm --watch src/index.ts",
     "ingest": "pnpm build && node dist/ingest.js",
-    "start": "pnpm build && node dist/index.js",
+    "start": "pnpm build && node dist/index.js -p 3001",
     "build": "tsc"
   },
   "keywords": [],

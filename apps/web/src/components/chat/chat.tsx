@@ -35,7 +35,8 @@ import {
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
 import { Loader } from "@/components/ai-elements/loader";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, UIMessage } from "ai";
+import { saveChat } from "@/lib/chat-store";
 
 const models = [
   {
@@ -44,14 +45,28 @@ const models = [
   },
 ];
 
-const ChatBot = () => {
+export default function Chat({
+  id,
+  initialMessages = [],
+}: {
+  id: string;
+  initialMessages?: UIMessage[];
+}) {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
   const { messages, sendMessage, status } = useChat({
+    id,
+    messages: initialMessages,
     transport: new DefaultChatTransport({
-      api: "http://localhost:3000/api/chat",
+      api: "http://localhost:3001/api/chat",
     }),
+    onFinish: ({ messages }) => {
+      saveChat({
+        chatId: id,
+        messages: messages,
+      });
+    },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,15 +81,14 @@ const ChatBot = () => {
           },
         }
       );
-      setInput("");
     }
+    setInput("");
   };
-  console.log(messages);
   return (
-    <div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
-      <div className="flex flex-col h-full">
-        <Conversation className="h-full">
-          <ConversationContent>
+    <div className="p-6 relative  mx-auto size-full ">
+      <div className="min-h-[100dvh] flex flex-col">
+        <Conversation>
+          <ConversationContent className="max-w-4xl mx-auto">
             {messages.map((message) => (
               <div key={message.id}>
                 {message.role === "assistant" && (
@@ -132,48 +146,49 @@ const ChatBot = () => {
           </ConversationContent>
           <ConversationScrollButton />
         </Conversation>
-
-        <PromptInput onSubmit={handleSubmit} className="mt-4">
-          <PromptInputTextarea
-            onChange={(e) => setInput(e.target.value)}
-            value={input}
-          />
-          <PromptInputToolbar>
-            <PromptInputTools>
-              <PromptInputButton
-                variant={webSearch ? "default" : "ghost"}
-                onClick={() => setWebSearch(!webSearch)}
-              >
-                <GlobeIcon size={16} />
-                <span>Search</span>
-              </PromptInputButton>
-              <PromptInputModelSelect
-                onValueChange={(value) => {
-                  setModel(value);
-                }}
-                value={model}
-              >
-                <PromptInputModelSelectTrigger>
-                  <PromptInputModelSelectValue />
-                </PromptInputModelSelectTrigger>
-                <PromptInputModelSelectContent>
-                  {models.map((model) => (
-                    <PromptInputModelSelectItem
-                      key={model.value}
-                      value={model.value}
-                    >
-                      {model.name}
-                    </PromptInputModelSelectItem>
-                  ))}
-                </PromptInputModelSelectContent>
-              </PromptInputModelSelect>
-            </PromptInputTools>
-            <PromptInputSubmit disabled={!input} status={status} />
-          </PromptInputToolbar>
-        </PromptInput>
+        <div className="mt-auto sticky  pb-4 bg-background bottom-0 z-10">
+          <PromptInput onSubmit={handleSubmit} className=" max-w-4xl mx-auto">
+            <PromptInputTextarea
+              onChange={(e) => setInput(e.target.value)}
+              value={input}
+            />
+            <PromptInputToolbar>
+              <PromptInputTools>
+                <PromptInputButton
+                  disabled
+                  variant={webSearch ? "default" : "ghost"}
+                  onClick={() => setWebSearch(!webSearch)}
+                  className="cursor-not-allowed disabled:opacity-50"
+                >
+                  <GlobeIcon size={16} />
+                  <span>Search</span>
+                </PromptInputButton>
+                <PromptInputModelSelect
+                  onValueChange={(value) => {
+                    setModel(value);
+                  }}
+                  value={model}
+                >
+                  <PromptInputModelSelectTrigger>
+                    <PromptInputModelSelectValue />
+                  </PromptInputModelSelectTrigger>
+                  <PromptInputModelSelectContent className="cursor-pointer">
+                    {models.map((model) => (
+                      <PromptInputModelSelectItem
+                        key={model.value}
+                        value={model.value}
+                      >
+                        {model.name}
+                      </PromptInputModelSelectItem>
+                    ))}
+                  </PromptInputModelSelectContent>
+                </PromptInputModelSelect>
+              </PromptInputTools>
+              <PromptInputSubmit disabled={!input} status={status} />
+            </PromptInputToolbar>
+          </PromptInput>
+        </div>
       </div>
     </div>
   );
-};
-
-export default ChatBot;
+}
